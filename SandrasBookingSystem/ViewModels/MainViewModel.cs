@@ -28,8 +28,7 @@ namespace SandrasBookingSystem.ViewModels
         public RadioButton RadioAgency { get; set; }
 
         public string Option { get; set; }
-
-
+        public Freelancer AuthenticatedUser { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -89,11 +88,7 @@ namespace SandrasBookingSystem.ViewModels
         public string ConfirmPassword { get; set; }
 
         // Booking tilhører en freelancer
-        // Checker om ord er i en rigtig position
-        // Referer til en radiobutton i en klasse
         // Referer til et helt objekt og dets parametre 
-        // GitHub
-        // IPersistance 
 
         private void RadioButtonCommand(string answer)
         {

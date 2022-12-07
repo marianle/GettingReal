@@ -24,6 +24,7 @@ namespace SandrasBookingSystem.Commands
 
         public void Execute(object? parameter)
         {
+            string freelancersPath = "..\\..\\..\\Freelancers.txt";
             if (parameter is MainViewModel mvm)
             {
                 if (string.IsNullOrEmpty(mvm.LoginEmail) || string.IsNullOrEmpty(mvm.LoginPassword))
@@ -40,28 +41,41 @@ namespace SandrasBookingSystem.Commands
                     string UserEmail = user.Email;
                     string UserPassword = user.Password;
 
-                    StreamReader sr = new StreamReader("..\\..\\..\\Freelancers.txt");
+                    bool isLoggedIn = false;
+
+                    StreamReader sr = new StreamReader(freelancersPath);
                     string newDocument = sr.ReadToEnd(); // læser dokumentet
                     sr.Close(); // Lukker dokumentet igen
 
-                    if (newDocument.Contains(UserEmail) && newDocument.Contains(UserPassword))
+                    var document = File.ReadAllLines(freelancersPath);
+                    foreach(var usr in document)
                     {
-                        var oldLines = File.ReadAllLines("..\\..\\..\\Freelancers.txt");
-                     
+                        string[] userInfo = usr.Split(",");
+                        string storedPassword = userInfo[4].Trim();
+                        string storedEmail = userInfo[2].Trim().ToLower();
+                        if (UserEmail.ToLower() == storedEmail && UserPassword == storedPassword) {
+                            isLoggedIn = true;
+                            break;
+                        }
+                    }
+
+                    if (isLoggedIn)
+                    {
+                        var oldLines = File.ReadAllLines(freelancersPath);
                         MessageBox.Show("Du er logget ind.");
 
                         string line;
 
                         System.IO.StreamReader file =
-                            new System.IO.StreamReader("..\\..\\..\\Freelancers.txt");
+                            new System.IO.StreamReader(freelancersPath);
                         while ((line = file.ReadLine()) != null)
                         {
                             string[] word = line.Split(',');
-                            mvm.Freelancers.Add(new Freelancer(word[0], word[1], word[2], word[3], word[4]));
-
+                            Freelancer freelancer = new Freelancer(word[0], word[1], word[2], word[3], word[4]);
+                            mvm.Freelancers.Add(freelancer);
+                            mvm.AuthenticatedUser = freelancer;
                         }
                         file.Close();
-
                         string line1;
 
                         System.IO.StreamReader file1 =
